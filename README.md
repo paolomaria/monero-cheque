@@ -54,5 +54,5 @@ The cheques are currently in french.
  
 ## Donations
 
-Every donation is very welcome. You can transfer some Moneros to the following public key: `44wEhACSPxyRZRAZyWURjvWH61q5CAhYqWvycUYnkLuUMmwCHhCzFtJGLD1EoiZc2y2EtWBxcgZxzhoU1yAucq8dB2hB51B:J1s`
+Every donation is very welcome. You can transfer some Moneros to the following public key: `44wEhACSPxyRZRAZyWURjvWH61q5CAhYqWvycUYnkLuUMmwCHhCzFtJGLD1EoiZc2y2EtWBxcgZxzhoU1yAucq8dB2hB51B`
 
