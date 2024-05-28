@@ -1,0 +1,29 @@
+#!/usr/bin/expect -f
+
+if {[llength $argv] > 4} {
+# We give a message so the user know our syntax:
+puts "usage: executeCommand.exp <secret identifier> <password> <command>"
+exit 1
+}
+
+set usednet "--offline"
+# Now we set variables in expect, note: [lrange $argv 0 0 =$1 the first parameter, and so on.
+set username [lrange $argv 0 0]
+set password [lrange $argv 1 1]
+set command [lrange $argv 2 2]
+if {[llength $argv] == 4} {
+	set usednet [lrange $argv 3 3]
+}
+
+set timeout 60
+
+spawn monero-wallet-cli --wallet-file $username --password $password $usednet $command
+match_max 100000
+
+expect "Wallet password:"
+send -- "$password\r"
+
+# send blank line (\r) to make sure we get back to cli
+send -- "\r"
+#We have gave our "program" and now we expect that the remote server close the connection:
+expect eof
