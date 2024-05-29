@@ -88,6 +88,11 @@ while getopts "ha:n:so:d:t:" opt; do
   esac
 done
 
+if [ -n "$netToUse" -a "$netToUse" != "--testnet" -a "$netToUse" != "--stagenet" ]; then
+	show_usage
+	exit 1
+fi
+
 if [ $amount == "none" -o $number == "none" ]; then
 	show_usage
 	exit 1
@@ -186,8 +191,10 @@ for (( i = 0 ; $i < $number; i = $i + 1)) ; do
 	#echo $chequeWalletSpendKey
 	#echo $chequeWalletAddress
 	
-	myJson=`echo $jsonTemplate | sed -e "s@__FILENAME__@$chequeWalletFile@g" -e "s@__PASSWORD__@$passFormatted@g" -e "s@__VIEWKEY__@$chequeWalletViewKey@g" -e "s@__SPENDKEY__@$chequeWalletSpendKey@g" -e "s@__ADDRESS__@$chequeWalletAddress@g"`
+	jsonWalletFile=$(mktemp /tmp/cheque_XXXXXXXXX)
+	myJson=`echo $jsonTemplate | sed -e "s@__FILENAME__@$jsonWalletFile@g" -e "s@__PASSWORD__@$passFormatted@g" -e "s@__VIEWKEY__@$chequeWalletViewKey@g" -e "s@__SPENDKEY__@$chequeWalletSpendKey@g" -e "s@__ADDRESS__@$chequeWalletAddress@g"`
 	myJson=`echo $myJson | tr -d "\n\r"`
+	rm $jsonWalletFile
 	#echo $myJson
 	
 	qrfile=$(mktemp $tdir/.XXXXXXXXX.png)
@@ -219,7 +226,7 @@ if [ $simulate -ne 1 ]; then
 		exit 1
 	fi
 	monero-wallet-cli --wallet-file $secretId --password $secretPw $daemonAddress $netToUse transfer $completeTransferCommand |& tee $tdir/createCheque.log
-	grep "Transaction successfully submitted" $tdir/createCheque.log
+	grep "Transaction successfully submitted" $tdir/createCheque.log > /dev/null
 fi
 
 rst2pdf $rstFile -o $pdfFile
