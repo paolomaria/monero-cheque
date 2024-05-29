@@ -25,6 +25,8 @@ The packages which provide the following binaries have to be installed:
  
 ## How to use
 
+### How to create a check
+
 Once you did checkout the project go to the Monero-cheque directory and all `./createCheques.sh`:
 ```
 cd monero-cheque
