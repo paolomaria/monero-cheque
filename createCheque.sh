@@ -58,6 +58,7 @@ number=none
 outputFilePrefix="none"
 daemonAddress=
 netToUse=
+netToUseOption=
 simulate=0
 
 now=`date +"%d/%m/%Y"`
@@ -79,7 +80,7 @@ while getopts "ha:n:so:d:t:" opt; do
       ;;
     o)  outputFilePrefix=$OPTARG
       ;;
-    t)  netToUse="--$OPTARG"
+    t)  netToUseOption="$OPTARG"
       ;;
     d)  daemonAddress="--daemon-address $daemonAddress$OPTARG"
       ;;
@@ -88,9 +89,13 @@ while getopts "ha:n:so:d:t:" opt; do
   esac
 done
 
-if [ -n "$netToUse" -a "$netToUse" != "--testnet" -a "$netToUse" != "--stagenet" ]; then
+if [ -n "$netToUseOption" -a "$netToUseOption" != "testnet" -a "$netToUseOption" != "stagenet" ]; then
 	show_usage
 	exit 1
+fi
+
+if [ -n "$netToUseOption" ]; then
+	netToUse="--$netToUseOption"
 fi
 
 if [ $amount == "none" -o $number == "none" ]; then
@@ -157,7 +162,7 @@ completeTransferCommand=""
 amountForCheque="$amount XMR (moins les frais de transaction)"
 
 if [ ! -z $netToUse ]; then
-	amountForCheque="sans valeur ($amount XMR sur $netToUse)"
+	amountForCheque="sans valeur ($amount XMR sur $netToUseOption)"
 fi
 if [ $simulate -eq 1 ]; then
 	amountForCheque="sans valeur"
@@ -165,8 +170,10 @@ fi
 
 for (( i = 0 ; $i < $number; i = $i + 1)) ; do
 	if [ $i -gt 0 ]; then
-		echo "----" >> $rstFile
-		echo >> $rstFile
+		if [  $(($i % 3)) -ne 0 ]; then
+			echo "----" >> $rstFile
+			echo >> $rstFile
+		fi
 		echo "----" >> $outputFile
 		echo >> $outputFile
 	fi
